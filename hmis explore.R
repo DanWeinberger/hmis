@@ -1,5 +1,5 @@
 #bh1<-read.csv('C:/Users/dmw63/Desktop/My documents h/GATES/india/hmis/Bihar series by district.csv')
-bh1<-read.csv('C:/Users/dmw63/Desktop/My documents h/GATES/india/hmis/Uttar Pradesh series by district.csv')
+bh1<-read.csv('C:/Users/dmw63/Desktop/My documents h/GATES/india/hmis/hmis/Uttar Pradesh series by district.csv')
 
 str(bh1)
 bh1$uri<-bh1$X_10_13
@@ -37,4 +37,5 @@ library(reshape2)
 ds.sub<-bh1[,c('District','monthdate','uri')]
 ds.m<-melt(ds.sub, id=c('District','monthdate'))
 ds.c<-dcast(ds.m, monthdate~District)
+par(mfrow=c(1,1), mar=c(1,1,1,1))
 hm1<-heatmap(t(as.matrix(ds.c[,-1])), scale='row', Rowv=NA, Colv=NA)
