@@ -21,16 +21,16 @@ bh2<-aggregate(x=ds.sub, by=list( strat1) , FUN='sum', na.rm=TRUE)
 names(bh2)<-c('monthdate',names(ds.sub))
 bh2$monthdate<-as.Date(bh2$monthdate)
 bh2$neonatal_death[nrow(bh2)]<-NA
-par(mfrow=c(3,2), mar=c(1,3,1,1))
-plot(bh2$monthdate,bh2$diar_death, type='l', bty='l')
-plot(bh2$monthdate,bh2$pneu_death, type='l', bty='l')
-plot(bh2$monthdate,bh2$sepsis_death, type='l', bty='l')
-plot(bh2$monthdate,bh2$asphyxia_death, type='l', bty='l')
-plot(bh2$monthdate,bh2$measles_death, type='l', bty='l')
-plot(bh2$monthdate, bh2$neonatal_death, type='l', bty='l')
+par(mfrow=c(3,2), mar=c(2,3,1,1))
+plot(bh2$monthdate,bh2$pneu_death,main='Pneumonia deaths', type='l', bty='l')
+plot(bh2$monthdate,bh2$diar_death,main='Diarrhea deaths', type='l', bty='l')
+plot(bh2$monthdate,bh2$sepsis_death,main='Sepsis Deaths', type='l', bty='l')
+plot(bh2$monthdate,bh2$asphyxia_death,main='Asphyxia Deaths', type='l', bty='l')
+plot(bh2$monthdate,bh2$measles_death,main='Measles Deaths', type='l', bty='l')
+plot(bh2$monthdate, bh2$neonatal_death, main='Neonatal Deaths',type='l', bty='l')
 
-plot(bh2$uri, type='l')
-
+par(mfrow=c(1,1), mar=c(2,3,1,1))
+plot(bh2$uri, type='l',bty='l', main='URI cases')
 
 #heatmap of reporting of URI
 library(reshape2)
@@ -38,4 +38,4 @@ ds.sub<-bh1[,c('District','monthdate','uri')]
 ds.m<-melt(ds.sub, id=c('District','monthdate'))
 ds.c<-dcast(ds.m, monthdate~District)
 par(mfrow=c(1,1), mar=c(1,1,1,1))
-hm1<-heatmap(t(as.matrix(ds.c[,-1])), scale='row', Rowv=NA, Colv=NA)
+hm1<-heatmap(t(as.matrix(ds.c[,-1])), scale='row', Rowv=NA, Colv=NA,cexRow =0.5)
