@@ -92,7 +92,8 @@ summary(mod2$lme)
 
 #statewide
 ds.c.state<-dcast(ds.m, monthdate~1, fun.aggregate = sum)
-plot(ds.c.state[,1],ds.c.state[,2], type='l')
+par(mar=c(3,2,1,1))
+plot(ds.c.state[ds.c.state$monthdate>=as.Date('2017-04-01'),1],ds.c.state[ds.c.state$monthdate>=as.Date('2017-04-01'),2], type='l')
 
 #Brian: analyze by region vs district
 #Need a crosswalk file. Western/Central/Eastern in UP; district-> division
