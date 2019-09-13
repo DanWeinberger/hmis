@@ -8,6 +8,7 @@
 #Muzaffarpur, Munger, Vaishali, Madhepura, Madhubani, Purnea, Samastipur, Saran, Sitamarhi, Sheohar and Supaul
 #bh1<-read.csv('C:/Users/dmw63/Desktop/My documents h/GATES/india/hmis/Bihar series by district.csv')
 library(lme4)
+library(lubridate)
 bh1<-read.csv('C:/Users/dmw63/Desktop/My documents h/GATES/india/hmis/hmis/uttarPradesh series to Mar 2019.csv')
 
 str(bh1)
@@ -33,6 +34,9 @@ bh2<-aggregate(x=ds.sub, by=list( strat1) , FUN='sum', na.rm=TRUE)
 names(bh2)<-c('monthdate',names(ds.sub))
 bh2$monthdate<-as.Date(bh2$monthdate)
 bh2$neonatal_death[nrow(bh2)]<-NA
+bh2$month<-as.factor(month(bh2$monthdate))
+bh2$year<-as.factor(year(bh2$monthdate))
+
 par(mfrow=c(3,2), mar=c(3,3,1,1))
 plot(bh2$monthdate,bh2$pneu_death,main='Pneumonia deaths', type='l', bty='l')
 plot(bh2$monthdate,bh2$diar_death,main='Diarrhea deaths', type='l', bty='l')
@@ -43,6 +47,11 @@ plot(bh2$monthdate, bh2$neonatal_death, main='Neonatal Deaths',type='l', bty='l'
 
 par(mfrow=c(1,1), mar=c(2,3,1,1))
 plot(bh2$uri, type='l',bty='l', main='URI cases')
+mod.uri<- glm( uri~ month +year, family='poisson', data=bh2)
+summary(mod.uri)
+
+mod.pneu.death<- glm( pneu_death~ month +year, family='poisson', data=bh2[!(bh2$year %in% c('2017','2018','2019')),])
+summary(mod.pneu.death)
 
 #heatmap of reporting of URI
 #seems to be incomplete before April 2017
