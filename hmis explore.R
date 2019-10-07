@@ -7,6 +7,22 @@
 #In Bihar:  The 17 high-priority districts are  Araria, Begusarai, Darbhanga, Kishanganj, Khagaria, Katihar, 
 #Muzaffarpur, Munger, Vaishali, Madhepura, Madhubani, Purnea, Samastipur, Saran, Sitamarhi, Sheohar and Supaul
 #bh1<-read.csv('C:/Users/dmw63/Desktop/My documents h/GATES/india/hmis/Bihar series by district.csv')
+
+#######
+#Lorine
+##ACUTE RESPIRATORY INFECTION REQUIRING ADMISSION??
+##85% of DEATH OCCUR AT HOME--SHOULD BE IN HMIS; MANY
+##IN PRIVATE SECTOR HOSPITALS
+##CONTROLS: DIARRHEA deaths? ROTA VACCINE IS ROLLING OUT..
+##ACUTE ENCAPHALITIS IN SOUTH UP AND BIHAR. THERE ARE SOME
+##VACCINE PROGRAMS BUT STARTED 5 YEARS AGO...NOT REALLY
+#IN WESTERN UP
+#ASPHYXIA DEATHS WONT BE SAME HOSPITALS --
+#WOULD BE IN WOMENS HOSPITAL...MANY ARE SEPARATE 
+#WOMENS/MENS HOSPTALS
+#UP HMIS--DR VISANT (Sp?) 
+#######
+
 library(lme4)
 library(lubridate)
 bh1<-read.csv('C:/Users/dmw63/Desktop/My documents h/GATES/india/hmis/hmis/uttarPradesh series to Mar 2019.csv')
@@ -63,7 +79,6 @@ par(mfrow=c(1,1), mar=c(1,1,1,1))
 hm1<-heatmap(t(as.matrix(ds.c[,-1])), scale='row', Rowv=NA, Colv=NA,cexRow =0.5)
 hm1<-heatmap(t(as.matrix(ds.c[ds.c$monthdate>=as.Date('2017-04-01'),-1])), scale='row', Rowv=NA, Colv=NA,cexRow =0.5)
 hm1<-heatmap(t(as.matrix(ds.c[ds.c$monthdate>=as.Date('2017-04-01'),-1])), scale='row',  Colv=NA,cexRow =0.5)
-
 
 #Pneumonia deaths--seems to be incomplete before April 2017
 ds.sub<-bh1[,c('DISTRICT','monthdate','pneu_death')]
