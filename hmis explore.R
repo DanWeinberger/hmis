@@ -43,7 +43,7 @@ bh1$pcv.status<-0
 bh1$pcv.status[bh1$DISTRICT %in% up.intro.districts] <-1
 
 unique(bh1$DISTRICT)
-
+#test123
 strat1<-factor(bh1$monthdate)
 ds.sub<-bh1[,c('uri', 'diar_death', 'pneu_death','sepsis_death','asphyxia_death', 'measles_death', 'neonatal_death')]
 bh2<-aggregate(x=ds.sub, by=list( strat1) , FUN='sum', na.rm=TRUE)
