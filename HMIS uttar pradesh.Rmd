@@ -1,0 +1,96 @@
+---
+title: "HMIS exploration Uttar Pradesh"
+author: "Dan Weinberger"
+date: "October 29, 2019"
+output: html_document
+---
+
+PCV was launched by the Union Health Minister, Shri JP Nadda on May 13, 2017 at Mandi,
+Himachal Pradesh [1]. With this phased introduction, nearly 2.1 million children in
+Himachal Pradesh (all 12 districts), parts of Bihar (17 out of 38 districts)
+and Uttar Pradesh (6 out of 75 districts) will be vaccinated with PCV in the first year [2].
+This will be followed by introduction in Madhya Pradesh and Rajasthan next year, and eventually coverage will be expanded across the entire country in a phased manner, in the coming years. "
+In uttar Pradesh it is: Lakhimpur Kheri, Sitapur, Siddharth Nagar, Bahraich, Balrampur, Shrawasti;
+In Bihar:  The 17 high-priority districts are  Araria, Begusarai, Darbhanga, Kishanganj, Khagaria, Katihar,
+Muzaffarpur, Munger, Vaishali, Madhepura, Madhubani, Purnea, Samastipur, Saran, Sitamarhi, Sheohar and Supaul
+
+#######
+Lorine
+ACUTE RESPIRATORY INFECTION REQUIRING ADMISSION??
+85% of DEATH OCCUR AT HOME--SHOULD BE IN HMIS; MANY
+IN PRIVATE SECTOR HOSPITALS 
+CONTROLS: DIARRHEA deaths? ROTA VACCINE IS ROLLING OUT..ACUTE ENCAPHALITIS IN SOUTH UP AND BIHAR. THERE ARE SOME VACCINE PROGRAMS BUT STARTED 5 YEARS AGO...NOT REALLY IN WESTERN UP
+ASPHYXIA DEATHS WONT BE SAME HOSPITALS --WOULD BE IN WOMENS HOSPITAL...MANY ARE SEPARATE WOMENS/MENS HOSPTALS
+UP HMIS--DR VISANTH  
+#######
+ 
+ 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(reshape2)
+
+```
+
+##Load data
+```{r}
+bh1<-read.csv('uttarPradesh series to Mar 2019.csv')
+
+```
+
+#Data structure
+```{r}
+str(bh1)
+
+```
+
+Relabel data 
+```{r}
+bh1$month<-as.numeric(substr(bh1$DATE,6,7))
+bh1$year<-as.numeric(substr(bh1$DATE,2,5))
+bh1$uri<-bh1$X_10_13
+bh1$pneu_death<-bh1$X_16_3_1
+bh1$diar_death<-bh1$X_16_3_2
+bh1$measles_death<-bh1$X_16_3_4
+bh1$asphyxia_death<-bh1$X_16_2_2
+bh1$sepsis_death<-bh1$X_16_2_1
+bh1$neonatal_death<-bh1$X_16_1
+bh1$monthdate<-as.Date(paste(bh1$year,bh1$month,'01', sep='-'))
+```
+
+Flag the districts that have introduced PCV
+```{r}
+up.intro.districts<-c('Lakhimpur Kheri', 'Sitapur', 'Siddharth Nagar', 'Bahraich', 'Balrampur', 'Shrawasti')
+bh1$pcv.status<-0
+bh1$pcv.status[bh1$DISTRICT %in% up.intro.districts] <-1
+```
+
+Time series plots
+```{r}
+
+strat1<-factor(bh1$monthdate)
+ds.sub<-bh1[,c('uri', 'diar_death', 'pneu_death','sepsis_death','asphyxia_death', 'measles_death', 'neonatal_death')]
+
+#Aggregate to state-level
+bh2<-aggregate(x=ds.sub, by=list( strat1) , FUN='sum', na.rm=TRUE) 
+names(bh2)<-c('monthdate',names(ds.sub))
+bh2$monthdate<-as.Date(bh2$monthdate)
+bh2$neonatal_death[nrow(bh2)]<-NA
+bh2$month<-as.factor(month(bh2$monthdate))
+bh2$year<-as.factor(year(bh2$monthdate))
+par(mfrow=c(1,1), mar=c(3,3,1,1))
+plot(bh2$monthdate,bh2$pneu_death,main='Pneumonia deaths', type='l', bty='l')
+```
+Reshape data and make a heatmap by district
+```{r}
+n.cols<-100
+nice.cols <-  colorRampPalette(brewer.pal(11, "YlOrRd"))(n.cols)
+
+
+ds.sub<-bh1[,c('DISTRICT','monthdate','uri')]
+ds.m<-melt(ds.sub, id=c('DISTRICT','monthdate'))
+ds.c<-dcast(ds.m, monthdate~DISTRICT)
+par(mfrow=c(1,1), mar=c(1,1,1,1))
+hm1<-heatmap(t(as.matrix(ds.c[,-1])), scale='row', Rowv=NA, Colv=NA,cexRow =0.5, col=nice.cols)
+
+```
+
